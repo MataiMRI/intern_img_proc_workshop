@@ -17,17 +17,25 @@ cd intern_img_proc_workshop
 On NeSI, create a Python virtual environment and register it as a Jupyter kernel
 
 ```
+export PROJECTID=uoaXXXXX
+export VENV_PATH="/nesi/project/${PROJECTID}/fmri_workshop_venv"
+
 module purge && module load Python/3.11.3-gimkl-2022a
-python -m venv venv
-venv/bin/pip install -r requirements.txt
+export PYTHONNOUSERSITE=1
+python -m venv --system-site-packages "$VENV_PATH"
+"${VENV_PATH}/bin/pip" install -r requirements.txt
+
 module purge && module load JupyterLab
-nesi-add-kernel -v ./venv -- matai_training_2023 Python/3.11.3-gimkl-2022a
+nesi-add-kernel --shared --account "$PROJECTID" --venv "$VENV_PATH" -- matai_training_2023 Python/3.11.3-gimkl-2022a
 ```
 
-Remove the kernel and the virtual environment using
+where `uoaXXXXX` is the NeSI project used for the workshop.
+
+Remove the virtual environment using
 
 ```
 module purge && module load JupyterLab
 jupyter-kernelspec remove -y matai_training_2023
-rm ./venv -rf
 ```
+
+and remove virtual environment by deleting the corresponding folder.
