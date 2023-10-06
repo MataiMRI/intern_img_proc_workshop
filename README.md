@@ -39,3 +39,13 @@ jupyter-kernelspec remove -y matai_training_2023
 ```
 
 and remove virtual environment by deleting the corresponding folder.
+
+Also, create a kernel for diffusion MRI:
+
+```
+module purge && module load JupyterLab
+nesi-add-kernel -c mrtrix3.sif -- matai_training_2023_dwi
+```
+
+- TODO add instructions to build the container
+- TODO change instructions to make a shared kernel for the container
