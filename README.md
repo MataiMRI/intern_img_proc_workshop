@@ -7,12 +7,20 @@ This repository contains material for the 2023 Mātai Intern fMRI workshop.
 
 **These instructions are for the instructors only.**
 
-Clone this repository
+Clone this repository, ideally in the workshop project folder
 
 ```
+cd /nesi/project/uoaXXXXX/$USER
 git clone https://github.com/MataiMRI/intern_img_proc_workshop.git
 cd intern_img_proc_workshop
 ```
+
+where `uoaXXXXX` is the NeSI project used for the workshop.
+
+All commands below assume that you are in the `intern_img_proc_workshop` folder.
+
+
+### Resting state analysis
 
 On NeSI, create a Python virtual environment and register it as a Jupyter kernel
 
@@ -31,7 +39,7 @@ nesi-add-kernel --shared --account "$PROJECTID" --venv "$VENV_PATH" -- matai_tra
 
 where `uoaXXXXX` is the NeSI project used for the workshop.
 
-Remove the virtual environment using
+Remove the Jupyter kernel using
 
 ```
 module purge && module load JupyterLab
@@ -40,12 +48,31 @@ jupyter-kernelspec remove -y matai_training_2023
 
 and remove virtual environment by deleting the corresponding folder.
 
-Also, create a kernel for diffusion MRI:
+
+### Diffusion MRI
+
+First, build the MRtrix3 container that will be used to run the jupyter kernel.
+
+Submit a Slurm job configured to build this container
+
+```
+sbatch --account=uoaXXXXX build_container.sl
+```
+
+where `uoaXXXXX` is the NeSI project used for the workshop.
+
+Once this job has finished, you should get a `mtrix3.sif` file in the current directory.
+
+Then create a shared Jupyter kernel using
 
 ```
 module purge && module load JupyterLab
-nesi-add-kernel -c mrtrix3.sif -- matai_training_2023_dwi
+nesi-add-kernel --shared --account "$PROJECTID" --container mrtrix3.sif -- matai_training_2023_dwi
 ```
 
-- TODO add instructions to build the container
-- TODO change instructions to make a shared kernel for the container
+As previously, you can remove the Jupyter kernel using
+
+```
+module purge && module load JupyterLab
+jupyter-kernelspec remove -y matai_training_2023_dwi
+```
