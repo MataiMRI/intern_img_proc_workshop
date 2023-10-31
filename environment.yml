@@ -1,0 +1,19 @@
+channels:
+  - conda-forge
+  - mrtrix3
+  - https://fsl.fmrib.ox.ac.uk/fsldownloads/fslconda/public
+  - defaults
+dependencies:
+  - mrtrix3::mrtrix3
+  - fsl-avwutils
+  - fsl-bet2
+  - python=3.11
+  - pip
+  - pip:
+    - numpy
+    - scipy
+    - pandas
+    - matplotlib
+    - ipython
+    - nilearn
+    - mne
