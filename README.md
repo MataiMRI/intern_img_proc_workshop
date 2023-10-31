@@ -17,62 +17,40 @@ cd intern_img_proc_workshop
 
 where `uoaXXXXX` is the NeSI project used for the workshop.
 
-All commands below assume that you are in the `intern_img_proc_workshop` folder.
-
-
-### Resting state analysis
-
-On NeSI, create a Python virtual environment and register it as a Jupyter kernel
+Then create a conda virtual environment and register it as a Jupyter kernel
 
 ```
 export PROJECTID=uoaXXXXX
 export VENV_PATH="/nesi/project/${PROJECTID}/fmri_workshop_venv"
 
-module purge && module load Python/3.11.3-gimkl-2022a
+module purge && module load Miniconda3/22.11.1-1
 export PYTHONNOUSERSITE=1
-python -m venv --system-site-packages "$VENV_PATH"
-"${VENV_PATH}/bin/pip" install -r requirements.txt
+conda env create -f environment.yml -p "$VENV_PATH"
 
 module purge && module load JupyterLab
-nesi-add-kernel --shared --account "$PROJECTID" --venv "$VENV_PATH" -- matai_training_2023 Python/3.11.3-gimkl-2022a
+nesi-add-kernel --shared --account "$PROJECTID" --conda-path "$VENV_PATH" -- matai_training_2023
 ```
 
-where `uoaXXXXX` is the NeSI project used for the workshop.
+
+## Uninstallation
+
+**These instructions are for the instructors only.**
+
+*If you need to recreate the Conda environment and/or the associated Jupyter kernel, remove it first using these instructions.*
+
+Remove the Conda environment as follows
+
+```
+export PROJECTID=uoaXXXXX
+export VENV_PATH="/nesi/project/${PROJECTID}/fmri_workshop_venv"
+
+module purge && module load Miniconda3/22.11.1-1
+conda env remove -p "$VENV_PATH"
+```
 
 Remove the Jupyter kernel using
 
 ```
 module purge && module load JupyterLab
 jupyter-kernelspec remove -y matai_training_2023
-```
-
-and remove virtual environment by deleting the corresponding folder.
-
-
-### Diffusion MRI
-
-First, build the MRtrix3 container that will be used to run the jupyter kernel.
-
-Submit a Slurm job configured to build this container
-
-```
-sbatch --account=uoaXXXXX build_container.sl
-```
-
-where `uoaXXXXX` is the NeSI project used for the workshop.
-
-Once this job has finished, you should get a `mtrix3.sif` file in the current directory.
-
-Then create a shared Jupyter kernel using
-
-```
-module purge && module load JupyterLab
-nesi-add-kernel --shared --account "$PROJECTID" --container mrtrix3.sif -- matai_training_2023_dwi
-```
-
-As previously, you can remove the Jupyter kernel using
-
-```
-module purge && module load JupyterLab
-jupyter-kernelspec remove -y matai_training_2023_dwi
 ```
