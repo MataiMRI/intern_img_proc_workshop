@@ -25,10 +25,14 @@ export VENV_PATH="/nesi/project/${PROJECTID}/fmri_workshop_venv"
 
 module purge && module load Miniconda3/22.11.1-1
 export PYTHONNOUSERSITE=1
-conda env create -f environment.yml -p "$VENV_PATH"
+conda env create -f environment.yml --solver libmamba -p "$VENV_PATH"
 
 module purge && module load JupyterLab
 nesi-add-kernel --shared --account "$PROJECTID" --conda-path "$VENV_PATH" -- matai_training_2023
+
+# modify the kernel wrapper script to make FSL utils work
+sed -i '/conda activate/a \\nexport FSLDIR="$(dirname $(which fslroi))/.."\n. "${FSLDIR}/etc/fslconf/fsl.sh"' \
+    "/nesi/project/${PROJECTID}/.jupyter/share/jupyter/kernels/matai_training_2023/wrapper.bash"
 ```
 
 
